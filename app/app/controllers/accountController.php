@@ -42,6 +42,15 @@ Class accountController extends BaseController {
 
 //-- END OF SIGNIN --\\
 
+//-- START OF SIGN_OUT --\\
+
+	public function getSignOut() {
+		Auth::logout();
+		return Redirect::route('home');
+	}
+
+//-- END OF SIGN-OUT --\\
+
 //-- START OF CREATE ACCOUNT--\\
 
 	public function getCreate() {
