@@ -109,23 +109,22 @@ Class accountController extends BaseController {
 		// get the current user's code when not active yet
 		$user = User::where('code', '=', $code)->where('active', '=', 0);
 
-		// 
-		if ($user->count()){
-			$user = $user->first();
+ 		// checks if $user is available based on where clause
+		if ($user->count()){ 
+			$user = $user->first(); // the first record based on results of where clause
 			
 			//update user to active state
-			$user->active 	= 1;
-			$user->code 	= '';
-			//$user->save();
+			$user->active 	= 1; // set active to 1
+			$user->code 	= ''; // remove unique code (save space on db)
 			
-			if ($user->save()) {
-				return Redirect::route('home')
-					->with('global', 'Activated! you can now sign in.');
+			if ($user->save()) { // saves the updated information to the specific user
+				return Redirect::route('home') // if save passes, redirects to home
+					->with('global', 'Activated! you can now sign in.'); // passes feedback to the user about the succes
 			}	
 		}
-
-		return Redirect::route('home')
-			->with('global', 'We could not activate your account, try again later');
+		// fallback if non of the previous checks pas
+		return Redirect::route('home') // redirect to home page
+			->with('global', 'We could not activate your account, try again later'); // passes feedback to the user about what heppaned
 	}
 
 	//-- END OF ACTIVATION ACCOUNT--\\
