@@ -16,6 +16,10 @@
 				{{ $errors->first('password') }}
 			@endif
 		</div>
+		<div class="field">
+			<input type="checkbox" name="remember" id="remember">
+			<label for="remember">remember me</label>
+		</div>
 
 		<input type="submit" value="signin">
 

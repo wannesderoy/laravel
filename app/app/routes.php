@@ -4,7 +4,8 @@ Route::get('/', array(
 	'uses' => 'HomeController@home',
 	//'uses' => 'AppController@app',
 ));
-// authenticated group
+
+//-- authenticated group --\\
 Route::group(array('before' => 'auth'), function() {
 
 	// account logout
@@ -12,10 +13,9 @@ Route::group(array('before' => 'auth'), function() {
 			'as' 	=> 'account-sign-out',
 			'uses' 	=> 'accountController@getSignOut'
 		));
-
 });
 
-// unautheticated group
+//-- unautheticated group --\\
 Route::group(array('before' => 'guest'), function() {
 
 	// CSRF protection group nested in the guest group
