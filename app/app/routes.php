@@ -41,4 +41,17 @@ Route::group(array('before' => 'guest'), function() {
 			'as' 	=> 'account-activate',
 			'uses' 	=> 'accountController@getActivate'
 		));
+
+	// account logout
+	/*
+	Route::get('/account/logout', array(
+			'as' 	=> 'account-sign-out',
+			'uses' 	=> 'accountController@getLogout'
+		));
+	*/
 });
+
+
+
+
+
