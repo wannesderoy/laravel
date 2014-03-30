@@ -3,7 +3,7 @@ laravel
 
 laravel test application.
 
-It's a simple application. A user can create an account, verify his account via email, and a can edit his info.
+It's a simple application. A user can create an account, verify his account via email, and he can edit his info.
 
 There are features like remembering a user, personal user profile, account recovery, unique email verification code, etc...
 
