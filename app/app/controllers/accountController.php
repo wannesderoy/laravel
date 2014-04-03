@@ -3,8 +3,9 @@ Class accountController extends BaseController {
 
 //-- START OF SIGNIN --\\
 
-	// Make the signin view (under views/account/signin.blade.php)
+	
 	public function getSignIn() {
+		// Make the signin view (under views/account/signin.blade.php)
 		return View::make('account.signin');
 	}
 
