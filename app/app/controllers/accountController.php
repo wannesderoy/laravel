@@ -48,6 +48,28 @@ Class accountController extends BaseController {
 
 //-- END OF SIGNIN --\\
 
+
+//-- START OF CHANGE PASSWORD --\\
+
+
+
+	public function getChangePassword() {
+		return View::make('account.changepassword');
+	}
+
+	public function postChangePassword() {
+		$validator = Validator::make(input::all(),
+				array(
+					'email'		=>'required|email|unique:users',
+					'password'	=>'required|min:3',
+					'password'	=>'required|same:password'
+					)
+			);
+	}
+
+
+//-- END OF CHANGE PASSWORD --\\
+
 //-- START OF SIGN_OUT --\\
 
 	public function getSignOut() {

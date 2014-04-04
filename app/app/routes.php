@@ -8,10 +8,12 @@ Route::get('/', array(
 //-- authenticated group --\\
 Route::group(array('before' => 'auth'), function() {
 
-	// 
+	// csrf protection group for authenticated users
 	Route::group(array('before' => 'csrf'), function() {
-		Route::post('account/change-password' array(
-				'as'	=> 'account-change-password';
+		
+		// post method for changing the password
+		Route::post('account/changepassword', array(
+				'as'	=> 'account-changepassword',
 				'uses'	=> 'accountController@postChangePassword'
 			));
 	});
@@ -23,8 +25,8 @@ Route::group(array('before' => 'auth'), function() {
 		));
 
 	// change password
-	Route::get('/account/change-password', array(
-			'as' 	=> 'account-change-password'
+	Route::get('/account/changepassword', array(
+			'as' 	=> 'account-changepassword',
 			'uses'	=> 'accountController@getChangePassword'
 		));
 });
