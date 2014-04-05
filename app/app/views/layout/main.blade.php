@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	{{ HTML::style('css/bootstrap.min.css') }}
+	
 	<title>Authentication app</title>
 </head>
 <body>

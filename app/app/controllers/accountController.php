@@ -9,11 +9,11 @@ Class accountController extends BaseController {
 		return View::make('account.signin');
 	}
 
-	// Read & validate the user email and password
+	// Read & validate the user username and password
 	public function postSignIn() {
 		$validator = Validator::make(Input::all(),
 				array(
-					'email' => 'required|email', //email field is required and (|) checked if email format
+					'username' => 'required', //email field is required and (|) checked if email format
 					'password' => 'required' // requires password to be filled in
 					)
 				);
@@ -28,13 +28,11 @@ Class accountController extends BaseController {
 			$remember =(Input::has('remember')) ? true : false ;
 
 				$auth = Auth::attempt(array( // puts the array of checks in variable $auth
-						'email' 	=> Input::get('email'), // checks if email (username) is same as in db
+						'username' 	=> Input::get('username'), // checks if email (username) is same as in db
 						'password' 	=> Input::get('password'), // checks if psswrd is the same as in db
-						'active' 	=> 1 // checks if user is activated (via mail confirmation)
-					), 
+						'active' 	=> 1 ),// checks if user is activated (via mail confirmation)
 				$remember
 			);
-
 			if ($auth) { // checks if $auth is valid
 				return Redirect::intended('/'); // if valid, redirect to the intended users page
 			} else { // if $auth not valid
@@ -45,28 +43,44 @@ Class accountController extends BaseController {
 		return Redirect::route('account-sign-in') // redirect to signin page
 			->with('global', 'there was a problem signing you in.'); // passes this feedback to the user
 	}
-
 //-- END OF SIGNIN --\\
 
-
 //-- START OF CHANGE PASSWORD --\\
-
-
-
 	public function getChangePassword() {
 		return View::make('account.changepassword');
 	}
-
 	public function postChangePassword() {
 		$validator = Validator::make(input::all(),
 				array(
-					'email'		=>'required|email|unique:users',
-					'password'	=>'required|min:3',
-					'password'	=>'required|same:password'
+					'old_password'		=>'required',
+					'password'			=>'required|min:3',
+					'passwordrepeat'	=>'required|same:password'
 					)
 			);
-	}
+		if($validator->fails() ) {
+			return Redirect::route('account-changepassword')
+				->with('global', 'there was a problem validating your input')
+				->withErrors($validator);
+		} else {
+			$user = User::(find()->id);
 
+			$old_password 	=Input::get('old_password');
+			$password 		=Input::get('password');
+
+			if(Hash::check -> ($old_password,$user->getAuthpassword()) {
+				$user -> password = Hash::make('password');
+
+				if($user->save()) {
+					return Redirect::route('home')
+					->with('global', 'your password has been saved');
+				}
+			}
+
+		}
+		return Redirect::route('account-changepassword')
+			->with('global', 'there was a BIG problem signing you in');
+	}
+// wannesderoy@gmail.com
 
 //-- END OF CHANGE PASSWORD --\\
 
