@@ -185,5 +185,62 @@ Class accountController extends BaseController {
 
 	//-- END OF ACTIVATION ACCOUNT--\\
 
+	//-- START OF FORGOT PASSWORD--\\
+
+	public function getForgotPassword() {	
+		return View::make('account.forgot');
+	}
+
+	public function postForgotPassword() {	
+		$validator = Validator::make(Input::all(), array (
+				'email'	=> 'required|email'
+
+			));
+		if($validator -> fails()) {
+			return Redirect::route('account-forgot-password')
+					->withErrors($validator)
+					->withInput();
+		} else {
+			
+			$user = User::where('email', '=', Input::get('email'));
+
+			if($user->count()) {
+				$user = $user->first();
+
+				//generate a new code and password
+				$code 					= str_random(60);
+				$password 				= str_random(10);
+
+				$user->code 			= $code;
+				$user->password_temp 	= Hash::make($password);
+
+				if($user->save()) {
+					
+					Mail::send('emails.auth.forgot', array('url' => '', 'username'=> $user->username, 'password' => $password), function($message) use($user) {
+						$message -> to($user->email, $user->username)->subject('your new password');
+					});
+				}
+			}
+
+
+
+		}
+		return Redirect::route('account-forgot-password')
+				->with('global', 'could not request new password');
+	} 
+
+	//-- END OF FORGOT PASSWORD--\\
 }
+
+
+
+
+
+
+
+
+
+
+
+
 ?>

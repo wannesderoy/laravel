@@ -1,6 +1,6 @@
 @extends('layout.main')
 
 @section('content')
-<p>User profile of {{ $user->username}} ({{ $user->email }})</p>
+<p>User profile of {{ e($user->username) }} ({{ e($user->email) }})</p>
 
 @stop
