@@ -90,9 +90,9 @@ Class accountController extends BaseController {
 
 //-- START OF SIGN_OUT --\\
 
-	public function getSignOut() {
-		Auth::logout();
-		return Redirect::route('home');
+	public function getSignOut() { // if sign-out route is chosen, this function is called.
+		Auth::logout(); // user is logged out (session halt)
+		return Redirect::route('home'); // user is redirected to home page
 	}
 
 //-- END OF SIGN-OUT --\\
@@ -186,64 +186,69 @@ Class accountController extends BaseController {
 
 	//-- START OF FORGOT PASSWORD--\\
 
-	public function getForgotPassword() {	
+	public function getForgotPassword() {	// make the forgot view
 		return View::make('account.forgot');
 	}
 
 	public function postForgotPassword() {	
-		$validator = Validator::make(Input::all(), array (
-				'email'	=> 'required|email'
+		$validator = Validator::make(Input::all(), array ( // get the input from the form and put it in $validators
+				'email'	=> 'required|email' // requirements for the form input
 
 			));
-		if($validator -> fails()) {
-			return Redirect::route('account-forgot-password')
-					->withErrors($validator)
-					->withInput();
+		if($validator -> fails()) { // if the validation fails
+			return Redirect::route('account-forgot-password') // redirect to the forget view
+					->withErrors($validator) // with feedback for the users 
+					->withInput(); // fill in the already filled in, but wrong input of the user
 		} else {
-			
-			$user = User::where('email', '=', Input::get('email'));
+			// if validation passes
+			$user = User::where('email', '=', Input::get('email')); // get the user that matches with the filled in email
 
-			if($user->count()) {
-				$user = $user->first();
+			if($user->count()) { // count all the users that match
+				$user = $user->first(); // get the first user that matches with the email
 
 				//generate a new code and password
-				$code 					= str_random(60);
-				$password 				= str_random(10);
+				$code 					= str_random(60); // make random code for unique url link
+				$password 				= str_random(10); // make new temporary password
 
-				$user->code 			= $code;
-				$user->password_temp 	= Hash::make($password);
+				$user->code 			= $code; // put the generated code into the db 
+				$user->password_temp 	= Hash::make($password); // hash the generated temporary password and put in db
 
-				if($user->save()) {
+				if($user->save()) { // save all the new db input
 					
 					Mail::send('emails.auth.forgot', array('link' => URL::route('account-recover', $code), 'username'=> $user->username, 'password' => $password), function($message) use($user) {
 						$message -> to($user->email, $user->username)->subject('your new password');
+						// email the corresponding view with the right link and username in it to the user.
 					});
 
+					// when email is send, redirect to the home page with succes message
 					return Redirect::route('home')
 							->with('global', 'we have send you a new password by email');
 				}
 			}
 		}
+		// when things go wrong (the user is not found for example), redirect to the forget views with error message
 		return Redirect::route('account-forgot-password')
 				->with('global', 'could not request new password');
 	} 
-// wannesderoy@gmail.com
-	public function getRecover($code) {
-		$user = User::where('code', '=', $code) -> where('password_temp', '!=', '');
 
-				if ($user->count()) {
-					$user = $user->first();
+	public function getRecover($code) { // when te link in the email is clicked this function is called
+		$user = User::where('code', '=', $code) -> where('password_temp', '!=', ''); // get the user where unique codes match and where temporary password is not empty.
 
-					$user->password 		= $user->password_temp;
-					$user->password_temp 	= '';
-					$user->code 			= '';
+				if ($user->count()) { // count all the matches
+					$user = $user->first(); // get the first match
 
-					if($user->save()) {
+					$user->password 		= $user->password_temp; // put the temporary password in the password fiel in the db
+					$user->password_temp 	= ''; // empty the temporary password in the db field
+					$user->code 			= ''; // empty the unique code in the db field
 
-						return Redirect::route('home') 
+					if($user->save()) { // save all the changes
+
+						// if save succeeds	
+						return Redirect::route('home') // redirect to the homepage with succes message
 								->with('global', 'your account had been recovered and you can sign in with your new password');
 					}
 				}
+				//if no user was found or other error, redirect to home with error message
 				return Redirect::route('home') 
 						->with('global', 'Could not recover your account');
 	}
@@ -251,16 +256,5 @@ Class accountController extends BaseController {
 	//-- END OF FORGOT PASSWORD--\\
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 ?>
