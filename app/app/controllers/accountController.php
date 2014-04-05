@@ -85,7 +85,6 @@ Class accountController extends BaseController {
 		return Redirect::route('account-changepassword') // if 
 				->with('global', 'there was a BIG problem signing you in');
 	}
-// wannesderoy@gmail.com
 
 //-- END OF CHANGE PASSWORD --\\
 
@@ -208,7 +207,7 @@ Class accountController extends BaseController {
 				$user = $user->first();
 
 				//generate a new code and password
-				$code 					= str_random(60);
+				$code 					= str_random(59);
 				$password 				= str_random(10);
 
 				$user->code 			= $code;
@@ -228,7 +227,7 @@ Class accountController extends BaseController {
 		return Redirect::route('account-forgot-password')
 				->with('global', 'could not request new password');
 	} 
-
+// wannesderoy@gmail.com
 	public function getRecover($code) {
 		$user = User::where('code', '=', $code) -> where('password_temp', '!=', '');
 
@@ -250,7 +249,7 @@ Class accountController extends BaseController {
 	}
 
 	//-- END OF FORGOT PASSWORD--\\
-	
+
 }
 
 
