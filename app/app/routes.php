@@ -81,14 +81,16 @@ Route::group(array('before' => 'guest'), function() {
 			'uses' 	=> 'accountController@getActivate'
 		));
 
+	// forget password GET
 	Route::get('/account/forgot-password', array(
 			'as'	=>'account-forgot-password',
 			'uses'	=>'accountController@getForgotPassword'
 		));
-	//
+	 
+	//forget password
 	Route::get('/account/recover/{code}', array(
-			'as' 	=> 'account-sign-in',
-			'uses' 	=> 'accountController@getSignIn'
+			'as' 	=> 'account-recover',
+			'uses' 	=> 'accountController@getRecover'
 		));
 });
 

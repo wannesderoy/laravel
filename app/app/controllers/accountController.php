@@ -216,18 +216,38 @@ Class accountController extends BaseController {
 
 				if($user->save()) {
 					
-					Mail::send('emails.auth.forgot', array('url' => '', 'username'=> $user->username, 'password' => $password), function($message) use($user) {
+					Mail::send('emails.auth.forgot', array('link' => URL::route('account-recover', $code), 'username'=> $user->username, 'password' => $password), function($message) use($user) {
 						$message -> to($user->email, $user->username)->subject('your new password');
 					});
+
+					return Redirect::route('home')
+							->with('global', 'we have send you a new password by email');
 				}
 			}
-
-
-
 		}
 		return Redirect::route('account-forgot-password')
 				->with('global', 'could not request new password');
 	} 
+
+	public function getRecover($code) {
+		$user = User::where('code', '=', $code)
+				->where('password_temp', '!=', '');
+
+				if ($user->count()) {
+					$user = $user->first();
+
+					$user->password 		= $user->password_temp;
+					$user->password_temp 	= '';
+					$user->code 			= '';
+
+					if($user->save()) {
+						return Redirect::route('home') 
+						->with('global', 'your account had been recovered and you can sign in with your new password')
+					}
+				}
+				return Redirect::route('home') 
+						->with('global', 'Could not recover your account')
+	}
 
 	//-- END OF FORGOT PASSWORD--\\
 }

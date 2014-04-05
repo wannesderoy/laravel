@@ -1,11 +1,12 @@
-Hello x,
-
-click link:
-
-new password : y
+Hello {{ $username }},
 <br>
-_________
-
+click link:
+<br>
+new password : {{ $password }}
+<br>
+_________ <br>
+link: <br>
+{{ $link }}
 Z <br>
 
 
