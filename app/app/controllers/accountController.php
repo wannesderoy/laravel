@@ -46,38 +46,39 @@ Class accountController extends BaseController {
 //-- END OF SIGNIN --\\
 
 //-- START OF CHANGE PASSWORD --\\
-	public function getChangePassword() {
+
+	public function getChangePassword() { // I don't think I still need to explain these 2 lines of code...
 		return View::make('account.changepassword');
 	}
-	public function postChangePassword() {
-		$validator = Validator::make(input::all(),
+	public function postChangePassword() { // validate all the input from the change password form
+		$validator = Validator::make(input::all(), // and put it in $validate
 				array(
 					'old_password'		=>'required',
 					'password'			=>'required|min:3',
 					'passwordrepeat'	=>'required|same:password'
 					)
 			);
-		if($validator->fails() ) {
+		if($validator->fails() ) { // if validation doesn't pass return to form with error mssages
 			return Redirect::route('account-changepassword')
 				->with('global', 'there was a problem validating your input')
 				->withErrors($validator);
 		} else {
-			$user = User::(find()->id);
+			$user = User::find(Auth::user() -> id); // if the validation passes => find the current users id
 
-			$old_password 	=Input::get('old_password');
+			$old_password 	=Input::get('old_password'); // put the old and the new password in variables
 			$password 		=Input::get('password');
 
-			if(Hash::check -> ($old_password,$user->getAuthpassword()) {
-				$user -> password = Hash::make('password');
+			if(Hash::check($old_password,$user->getAuthpassword()) { // check the users current password for true
+				$user -> password = Hash::make('password'); // hash his new password and put in $user
 
-				if($user->save()) {
-					return Redirect::route('home')
-					->with('global', 'your password has been saved');
+				if($user->save()) { // if current password check passes => save his new password
+					return Redirect::route('home') // redirect to home
+					->with('global', 'your password has been saved'); // with succes message
 				}
 			}
 
 		}
-		return Redirect::route('account-changepassword')
+		return Redirect::route('account-changepassword') // if 
 			->with('global', 'there was a BIG problem signing you in');
 	}
 // wannesderoy@gmail.com
