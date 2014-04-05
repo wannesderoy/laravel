@@ -1,10 +1,12 @@
 <?php
+// home route
 Route::get('/', array(
 	'as' => 'home',
 	'uses' => 'HomeController@home',
 	//'uses' => 'AppController@app',
 ));
 
+// user profile route
 Route::get('/user/{username}', array(
 		'as'	=>'profile-user',
 		'uses'	=>'ProfileController@user'
