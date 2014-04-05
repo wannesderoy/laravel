@@ -5,6 +5,11 @@ Route::get('/', array(
 	//'uses' => 'AppController@app',
 ));
 
+Route::get('/user/{username}', array(
+		'as'	=>'profile-user',
+		'uses'	=>'ProfileController@user'
+	)); 
+
 //-- authenticated group --\\
 Route::group(array('before' => 'auth'), function() {
 
