@@ -207,7 +207,7 @@ Class accountController extends BaseController {
 				$user = $user->first();
 
 				//generate a new code and password
-				$code 					= str_random(59);
+				$code 					= str_random(60);
 				$password 				= str_random(10);
 
 				$user->code 			= $code;

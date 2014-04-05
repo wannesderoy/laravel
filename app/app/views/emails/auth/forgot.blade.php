@@ -4,9 +4,8 @@ click link:
 <br>
 new password : {{ $password }}
 <br>
-_________ <br>
+
 link: <br>
-{{ $link }}
-Z <br>
+{{ $link }} <br>
 
-
+_________

@@ -12,7 +12,9 @@ Route::get('/user/{username}', array(
 		'uses'	=>'ProfileController@user'
 	)); 
 
+/*
 //-- authenticated group --\\
+*/
 Route::group(array('before' => 'auth'), function() {
 
 	// csrf protection group for authenticated users
@@ -38,7 +40,9 @@ Route::group(array('before' => 'auth'), function() {
 		));
 });
 
+/*
 //-- unautheticated group --\\
+*/
 Route::group(array('before' => 'guest'), function() {
 
 	// CSRF protection group nested in the guest group
@@ -87,7 +91,7 @@ Route::group(array('before' => 'guest'), function() {
 			'uses'	=>'accountController@getForgotPassword'
 		));
 	 
-	//forget password
+	// recover password route with unique code
 	Route::get('/account/recover/{code}', array(
 			'as' 	=> 'account-recover',
 			'uses' 	=> 'accountController@getRecover'

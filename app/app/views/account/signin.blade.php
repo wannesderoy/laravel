@@ -17,13 +17,19 @@
 			@endif
 		</div>
 		<div class="field">
-			<input type="checkbox" name="remember" id="remember">
-			<label for="remember">remember me</label>
+			<input type="checkbox" name="remember" id="remember"> <label for="remember">remember me</label>
 		</div>
 
+		<div>
+			<a href="{{ URL::route('account-forgot-password') }}">Forgot password</a>
+		</div>
+				
 		<input type="submit" value="signin">
 
 		{{ Form::token() }}
 
 	</form>
+
+
+
 @stop
