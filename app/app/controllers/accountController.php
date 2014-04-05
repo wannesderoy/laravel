@@ -68,13 +68,17 @@ Class accountController extends BaseController {
 			$old_password 	=Input::get('old_password'); // put the old and the new password in variables
 			$password 		=Input::get('password');
 
-			if(Hash::check($old_password,$user->getAuthpassword()) { // check the users current password for true
-				$user -> password = Hash::make('password'); // hash his new password and put in $user
+			if(Hash::check($old_password,$user->getAuthpassword())) { // check the users current password for true
+				$user -> password = Hash::make($password); // hash his new password and put in $user
 
 				if($user->save()) { // if current password check passes => save his new password
 					return Redirect::route('home') // redirect to home
 					->with('global', 'your password has been saved'); // with succes message
 				}
+			} else {
+				
+				return Redirect::route('account-changepassword') // if 
+					->with('global', 'your old password was not right');
 			}
 
 		}
