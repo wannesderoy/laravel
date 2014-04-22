@@ -63,7 +63,7 @@ Class accountController extends BaseController {
 					->with('global', 'there was a problem validating your input')
 					->withErrors($validator);
 		} else {
-			$user = User::find(Auth::user() -> id); // if the validation passes => find the current users id
+			$user = User::find(Auth::user()->id); // if the validation passes => find the current users id
 
 			$old_password 	=Input::get('old_password'); // put the old and the new password in variables
 			$password 		=Input::get('password');
@@ -80,13 +80,57 @@ Class accountController extends BaseController {
 				return Redirect::route('account-changepassword') // if 
 						->with('global', 'your old password was not right');
 			}
-
 		}
 		return Redirect::route('account-changepassword') // if 
 				->with('global', 'there was a BIG problem signing you in');
 	}
 
 //-- END OF CHANGE PASSWORD --\\
+
+//-- START OF ADD INFO --\\
+
+	public function getEditInfo() {
+		return View::make('account.editinfo');
+	}
+
+	public function postEditInfo() {
+		//validate all the input before continuing
+		$validator = Validator::make(input::all(), array(
+				'phonenumber'	=>'required|numeric',
+				'website'		=>'required|url',
+				'twitter'		=>'required_if:websites,1',
+				'profilepicture'=>'required|image'
+			));
+		if($validator->fails()) {
+			return Redirect::route('account-editinfo')
+					->with('global', 'there was a problem validating your input')
+					->withErrors($validator);
+		} else {
+
+			// if(Input::hasFile('profilepicture')) { // check if file upload exists
+				$destinationPath 	= public_path().'/img/'; 
+				$filename			= str_random(12).'_profile_picture'; // generate filename
+				$file 				= Input::file('profilepicture'); // ->move($destinationPath, $filename); // get file from form
+				$fileMove			= $file->move($destinationPath); // move file with new filename to new destination
+			// }
+
+			$user = User::find(Auth::user()->id); // find the current user
+
+			$user->firstname 		= Input::get('firstname');
+			$user->lastname 		= Input::get('lastname');
+			$user->profile_picture 	= $destinationPath . $filename;
+			$user->phonenumber 		= Input::get('phonenumber');
+			$user->website  		= Input::get('website');
+			$user->twitter 			= Input::get('twitter');
+
+			if($user->save()) {
+				return Redirect::route('home')
+						->with('global', 'your info has been saved');
+			}
+		}
+	}
+
+//-- END OF ADD INFO --\\
 
 //-- START OF SIGN_OUT --\\
 

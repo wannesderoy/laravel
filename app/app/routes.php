@@ -25,6 +25,11 @@ Route::group(array('before' => 'auth'), function() {
 				'as'	=> 'account-changepassword',
 				'uses'	=> 'accountController@postChangePassword'
 			));
+		// Post method for editing personal info for the user
+		Route::post('account/editinfo', array(
+				'as'	=> 'account-editinfo',
+				'uses'	=> 'accountController@postEditInfo'
+			));
 	});
 
 	// account logout
@@ -37,6 +42,11 @@ Route::group(array('before' => 'auth'), function() {
 	Route::get('/account/changepassword', array(
 			'as' 	=> 'account-changepassword',
 			'uses'	=> 'accountController@getChangePassword'
+		));
+	// edit info
+	Route::get('/account/editinfo', array(
+			'as'	=> 'account-editinfo',
+			'uses'	=> 'accountController@getEditInfo'
 		));
 });
 
