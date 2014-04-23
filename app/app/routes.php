@@ -26,7 +26,7 @@ Route::group(array('before' => 'auth'), function() {
 				'uses'	=> 'accountController@postChangePassword'
 			));
 		// Post method for editing personal info for the user
-		Route::post('account/editinfo', array(
+		Route::post('account/edit', array(
 				'as'	=> 'account-editinfo',
 				'uses'	=> 'accountController@postEditInfo'
 			));
@@ -44,7 +44,7 @@ Route::group(array('before' => 'auth'), function() {
 			'uses'	=> 'accountController@getChangePassword'
 		));
 	// edit info
-	Route::get('/account/editinfo', array(
+	Route::get('/account/edit', array(
 			'as'	=> 'account-editinfo',
 			'uses'	=> 'accountController@getEditInfo'
 		));

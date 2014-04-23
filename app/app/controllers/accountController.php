@@ -90,7 +90,7 @@ Class accountController extends BaseController {
 //-- START OF ADD INFO --\\
 
 	public function getEditInfo() {
-		return View::make('account.editinfo');
+		return View::make('account.editinfo2');
 	}
 
 	public function postEditInfo() {
@@ -104,21 +104,32 @@ Class accountController extends BaseController {
 		if($validator->fails()) {
 			return Redirect::route('account-editinfo')
 					->with('global', 'there was a problem validating your input')
-					->withErrors($validator);
+					->withErrors($validator)
+					->withInput();
 		} else {
-
-			// if(Input::hasFile('profilepicture')) { // check if file upload exists
-				$destinationPath 	= public_path().'/img/'; 
-				$filename			= str_random(12).'_profile_picture'; // generate filename
-				$file 				= Input::file('profilepicture'); // ->move($destinationPath, $filename); // get file from form
-				$fileMove			= $file->move($destinationPath); // move file with new filename to new destination
-			// }
+			if (Input::hasFile('profilepicture')) {
+				$path = public_path() . '/img/';
+				$filename = str_random(12);
+				// $extension = Input::file('profilepicture')->getClientOriginalExtension();
+				$fullFile = $path . $filename;
+				
+				$file = Input::file('profilepicture')->move($destination_path, $destination_filename);
+				/*App::error(function(Exception $exception) {
+					error_log($e);
+					return Redirect::route('account-editinfo')
+							->with('global', 'there was a problem moving your file to the server');
+				}*/
+			} else {
+				return Redirect::route('account-editinfo')
+						->with('global', 'there was a problem finding your file.');
+			}
+			$file = Input::file('profilepicture');
 
 			$user = User::find(Auth::user()->id); // find the current user
 
 			$user->firstname 		= Input::get('firstname');
 			$user->lastname 		= Input::get('lastname');
-			$user->profile_picture 	= $destinationPath . $filename;
+			$user->profile_picture 	= $fullFile;
 			$user->phonenumber 		= Input::get('phonenumber');
 			$user->website  		= Input::get('website');
 			$user->twitter 			= Input::get('twitter');
