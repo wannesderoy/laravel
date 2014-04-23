@@ -95,48 +95,71 @@ Class accountController extends BaseController {
 
 	public function postEditInfo() {
 		//validate all the input before continuing
-		$validator = Validator::make(input::all(), array(
-				'phonenumber'	=>'required|numeric',
-				'website'		=>'required|url',
+		$v = Validator::make(input::all(), array(
+				'firstname'		=>'Alpha',
+				'email'			=>'email',
+				'phonenumber'	=>'numeric',
 				'twitter'		=>'required_if:websites,1',
-				'profilepicture'=>'required|image'
+				'profilepicture'=>'image'
 			));
-		if($validator->fails()) {
+		if($v->fails()) {
 			return Redirect::route('account-editinfo')
 					->with('global', 'there was a problem validating your input')
-					->withErrors($validator)
+					->withErrors($v)
 					->withInput();
 		} else {
-			if (Input::hasFile('profilepicture')) {
-				$path = public_path() . '/img/';
-				$filename = str_random(12);
-				// $extension = Input::file('profilepicture')->getClientOriginalExtension();
-				$fullFile = $path . $filename;
-				
-				$file = Input::file('profilepicture')->move($destination_path, $destination_filename);
-				/*App::error(function(Exception $exception) {
-					error_log($e);
-					return Redirect::route('account-editinfo')
-							->with('global', 'there was a problem moving your file to the server');
-				}*/
-			} else {
-				return Redirect::route('account-editinfo')
-						->with('global', 'there was a problem finding your file.');
+
+			$u = User::find(Auth::user()->id); // find the current user
+			
+			if(Input::has('firstname') && Input::has('lastname')) {
+				$fullName = Input::get('firstname')." ".Input::get('lastname');
+				$u->fullname = $fullName;
 			}
-			$file = Input::file('profilepicture');
 
-			$user = User::find(Auth::user()->id); // find the current user
+			if(Input::has('firstname')) {
+				$u->firstname = Input::get('firstname');
+			}
 
-			$user->firstname 		= Input::get('firstname');
-			$user->lastname 		= Input::get('lastname');
-			$user->profile_picture 	= $fullFile;
-			$user->phonenumber 		= Input::get('phonenumber');
-			$user->website  		= Input::get('website');
-			$user->twitter 			= Input::get('twitter');
+			if(Input::has('lastname')){
+				$u->lastname = Input::get('lastname');
+			}
 
-			if($user->save()) {
+			if (Input::hasFile('profilepicture')) {
+				$path = "img/";
+				$filename = Str::random(42, 'numeric');
+				$extension = Input::file('profilepicture')->getClientOriginalExtension();
+				$fullFile = $path . $filename.".".$extension;
+				$file = Input::file('profilepicture')->move($path, $filename.".".$extension);
+				$u->profile_picture = $fullFile;
+			}
+			if(Input::has('phonenumber')){
+				$u->phonenumber = Input::get('phonenumber');
+			}
+
+			if(Input::has('website')) {
+				$website = Input::get('website');
+				if (starts_with($website, 'http://')) {
+					$u->website = $website;
+				} else {
+					$u->website = 'http://'.$website;
+				}
+			}
+
+			if(Input::has('twitter')) {
+				$twitter = Input::get('twitter');
+				if(starts_with($twitter, '@')){
+					$u->twitter = $twitter;
+				} else {
+					$u->twitter = '@'.$twitter;
+				}
+			}
+
+			if($u->save()) {
 				return Redirect::route('home')
 						->with('global', 'your info has been saved');
+			} else {
+				return Redirect::route('account-editinfo')
+						->with('global', 'Your input could not be saved.');
 			}
 		}
 	}

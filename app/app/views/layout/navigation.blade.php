@@ -5,6 +5,7 @@
 			<li><a href="{{ URL::route('account-sign-out') }}">Sign Out</a></li>
 			<li><a href="{{ URL::route('account-changepassword') }}">Change password</a></li>
 			<li><a href="{{ URL::route('account-editinfo') }}">Edit info</a></li>
+			<li><a href="{{ route('profile-user', Auth::user()->username); }}">Your account</a></li>
 		@else
 			<li><a href="{{ URL::route('account-sign-in') }}">Sign In</a></li>
 			<li><a href="{{ URL::route('account-create') }}">Create Account</a></li>
