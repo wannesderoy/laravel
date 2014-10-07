@@ -2,6 +2,8 @@
 
 @section('content')
 
+{{$email_ph = Auth::user()->email;}}
+
 	{{ Form::open(array('action' => 'accountController@postEditInfo', 'files' => true)) }}
 		
 		{{ Form::label('firstname', 'Firstname') }}
@@ -15,14 +17,9 @@
 				{{ $errors->first('lastname') }}
 		@endif
 		{{ Form::label('email', 'Email') }}
-		{{ Form::email('email','', array('class' => 'field', 'placeholder'=>'john@doe.com')); }}
+		{{ Form::email('email','', array('class' => 'field', 'placeholder'=> e($user->email) )); }}
 		@if($errors->has('email'))
 				{{ $errors->first('email') }}
-		@endif
-		{{ Form::label('profilepicture', 'profile picture') }}
-		{{ Form::file('profilepicture','', array('class' => 'field')); }}
-		@if($errors->has('profilepicture'))
-				{{ $errors->first('profilepicture') }}
 		@endif
 		{{ Form::label('phonenumber', 'Phone number') }}
 		{{ Form::text('phonenumber','', array('class' => 'field')); }}
@@ -46,7 +43,7 @@
 		@endif
 		{{ Form::token(); }}
 
-		{{ Form::submit('Click Me!'); }}
+		{{ Form::submit('Send!'); }}
 
     {{ Form::close() }}
 

@@ -9,6 +9,8 @@
 <p>phone: {{ e($user->phonenumber) }}</p>
 <p>twitter: <a href="http://twitter.com/{{ e($user->twitter) }}">{{e($user->twitter) }}</a></p>
 <p>website: <a href="{{ e($user->website) }}">{{ e($user->website)}}</a></p>
-<img src="../{{ e($user->profile_picture) }}" height="200" width="200"/>
+@if( Auth::user()->profile_picture )
+	<img src="../{{ e($user->profile_picture) }}" height="200" width="200"/>
+@endif
 </div>
 @stop

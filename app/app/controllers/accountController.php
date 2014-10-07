@@ -1,9 +1,9 @@
 <?php 
 Class accountController extends BaseController {
 
-//-- START OF SIGNIN --\\
-
-	
+	/**
+	 * Start of signin
+	 */
 	public function getSignIn() {
 		// Make the signin view (under views/account/signin.blade.php)
 		return View::make('account.signin');
@@ -43,10 +43,10 @@ Class accountController extends BaseController {
 		return Redirect::route('account-sign-in') // redirect to signin page
 				->with('global', 'there was a problem signing you in.'); // passes this feedback to the user
 	}
-//-- END OF SIGNIN --\\
 
-//-- START OF CHANGE PASSWORD --\\
-
+	/**
+	 * Start of change password
+	 */
 	public function getChangePassword() { // I don't think I still need to explain these 2 lines of code...
 		return View::make('account.changepassword');
 	}
@@ -85,12 +85,13 @@ Class accountController extends BaseController {
 				->with('global', 'there was a BIG problem signing you in');
 	}
 
-//-- END OF CHANGE PASSWORD --\\
 
-//-- START OF ADD INFO --\\
-
+	/**
+	 * Start of add info
+	 */
 	public function getEditInfo() {
-		return View::make('account.editinfo2');
+		$u = User::find(Auth::user()->id);
+		return View::make('account.editinfo2')->with('user', $u);
 	}
 
 	public function postEditInfo() {
@@ -124,14 +125,6 @@ Class accountController extends BaseController {
 				$u->lastname = Input::get('lastname');
 			}
 
-			if (Input::hasFile('profilepicture')) {
-				$path = "img/";
-				$filename = Str::random(42, 'numeric');
-				$extension = Input::file('profilepicture')->getClientOriginalExtension();
-				$fullFile = $path . $filename.".".$extension;
-				$file = Input::file('profilepicture')->move($path, $filename.".".$extension);
-				$u->profile_picture = $fullFile;
-			}
 			if(Input::has('phonenumber')){
 				$u->phonenumber = Input::get('phonenumber');
 			}
@@ -164,18 +157,42 @@ Class accountController extends BaseController {
 		}
 	}
 
-//-- END OF ADD INFO --\\
+	/**
+	 * Start of getProfilePicture
+	 */
+	public function getProfilePicture() {
+		return View::make('account.profilepicture');
+	}
 
-//-- START OF SIGN_OUT --\\
+	public function postProfilePicture() {
+
+			if (Input::hasFile('profilepicture')) {
+				$size = Input::file('profilepicture')->getSize();
+				if($size > 200) {
+					$extension = Input::file('profilepicture')->getClientOriginalExtension();
+					$path = Auth::user()->username . "/img/";
+					$filename = Str::random(30, 'numeric');	
+					$fullFile = $path . $filename.".".$extension;
+					$fileMove = Input::file('profilepicture')->move($path, $filename.".".$extension);
+					$u = User::find(Auth::user()->id);
+					$u->profile_picture = $fullFile;
+						if($u->save()) {
+							return Redirect::route('home')->with('global', 'you profile picture has been saved.');
+						} else {
+							return Redirect::route('home')->with('global', 'you profile picture has NOT been saved.');
+						}
+				}
+			}
+	}
+
+	public function getPhotoAlbum() {
+		return View::make('account.photo_album');
+	}
 
 	public function getSignOut() { // if sign-out route is chosen, this function is called.
 		Auth::logout(); // user is logged out (session halt)
 		return Redirect::route('home'); // user is redirected to home page
 	}
-
-//-- END OF SIGN-OUT --\\
-
-//-- START OF CREATE ACCOUNT--\\
 
 	public function getCreate() {
 		// Make the create account view (under views/account/create.blade.php) 
@@ -219,10 +236,10 @@ Class accountController extends BaseController {
 				
 				// send en email as confirmation
 				Mail::send('emails.auth.activate', array( // path to the data (html) to send in mail
-						
 						// link in mail template is route to page + unique code. The users name is also filled in
 						// then create the actual mail ($message) + fill in subject. Then send mail to user email
-						'link' => URL::route('account-activate', $code), 'username' => $username), function($message) use ($user) { 
+						'link' => URL::route('account-activate', $code), 'username' => $username), 
+						function($message) use ($user) { 
 						$message->to($user->email, $user->username)->subject('Activate your account');
 				});
 
@@ -233,11 +250,11 @@ Class accountController extends BaseController {
 			} 
 		}
 	}
-//-- END OF CREATE ACCOUNT--\\
 
 
-//-- START OF ACTIVATION ACCOUNT--\\
-
+	/**
+	 * Start of add info
+	 */
 	public function getActivate($code) { 
 		// get the current user's code when not active yet
 		$user = User::where('code', '=', $code)->where('active', '=', 0);
@@ -260,10 +277,10 @@ Class accountController extends BaseController {
 				->with('global', 'We could not activate your account, try again later'); // passes feedback to the user about what heppaned
 	}
 
-	//-- END OF ACTIVATION ACCOUNT--\\
 
-	//-- START OF FORGOT PASSWORD--\\
-
+	/**
+	 * Start of add info
+	 */
 	public function getForgotPassword() {	// make the forgot view
 		return View::make('account.forgot');
 	}
@@ -304,7 +321,7 @@ Class accountController extends BaseController {
 				}
 			}
 		}
-		// when things go wrong (the user is not found for example), redirect to the forget views with error message
+		// when things go wrong (the user is not found for example), redirect to the forget view with error message
 		return Redirect::route('account-forgot-password')
 				->with('global', 'could not request new password');
 	} 
@@ -330,9 +347,5 @@ Class accountController extends BaseController {
 				return Redirect::route('home') 
 						->with('global', 'Could not recover your account');
 	}
-
-	//-- END OF FORGOT PASSWORD--\\
-
 }
-
 ?>

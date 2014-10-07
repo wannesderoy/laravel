@@ -2,15 +2,14 @@
 // home route
 Route::get('/', array(
 	'as' => 'home',
-	'uses' => 'HomeController@home',
-	//'uses' => 'AppController@app',
+	'uses' => 'HomeController@home'
 ));
 
 // user profile route
 Route::get('/user/{username}', array(
-		'as'	=>'profile-user',
-		'uses'	=>'ProfileController@user'
-	)); 
+	'as'	=>'profile-user',
+	'uses'	=>'ProfileController@user'
+)); 
 
 /*
 //-- authenticated group --\\
@@ -30,6 +29,14 @@ Route::group(array('before' => 'auth'), function() {
 				'as'	=> 'account-editinfo',
 				'uses'	=> 'accountController@postEditInfo'
 			));
+		Route::post('account/profile-picture', array(
+				'as'	=>'account-profile-picture',
+				'uses'	=>'accountController@postProfilePicture'
+			));
+		Route::post('account/photo-album', array(
+				'as'	=>'account-photo-album',
+				'uses'	=>'formController@formSubmit'
+			));
 	});
 
 	// account logout
@@ -48,6 +55,14 @@ Route::group(array('before' => 'auth'), function() {
 			'as'	=> 'account-editinfo',
 			'uses'	=> 'accountController@getEditInfo'
 		));
+	Route::get('account/profile-picture', array(
+				'as'	=>'account-profile-picture',
+				'uses'	=>'accountController@getProfilePicture'
+			));
+	Route::get('account/photo-album', array(
+				'as'	=>'account-photo-album',
+				'uses'	=>'accountController@getPhotoAlbum'
+			));
 });
 
 /*
