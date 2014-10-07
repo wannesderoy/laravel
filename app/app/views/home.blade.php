@@ -5,8 +5,9 @@
 		<p>hello {{ Auth::user()->fullname }} </p>
 		<p>Your e-mail {{ Auth::user()->email }} </p>
 		<p>Your profile picture: </p>
-		<img src="{{ Auth::user()->profile_picture }}" height="200" width="200"/>
-
+		<!-- change model to print out complete picture with tag and everything -->
+		{{ User::set_profile_picture(); }}
+		<!-- //\\ -->
 	@else
 	
 	@endif

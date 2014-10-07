@@ -5,7 +5,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	protected $fillable = array('email', 'username', 'password', 'password_temp', 'code', 'active');
+	protected $fillable = array('email', 'username', 'password', 'password_temp', 'profile_picture', 'code', 'active');
 
 
 	/**
@@ -52,4 +52,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
+	// set users profile picture
+	public function set_profile_picture() {
+		$value = $query->where('id','=', Auth::user()->id)->first();
+		$pic = $value->profile_picture;
+		return "<img src=".$pic." height='200' width='200'/>"
+	}
 }
+
+
+
+
+
+
+
+
